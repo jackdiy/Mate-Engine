@@ -1,12 +1,14 @@
-# Mate Engine Web - 现代化3D角色查看器 🎭
+# Mate-Engine-Web3D-Jack - 现代化3D角色查看器 🎭
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+[![私有项目](https://img.shields.io/badge/许可证-专有-red.svg)](LICENSE.md)
 [![Three.js](https://img.shields.io/badge/Three.js-v0.169.0-green.svg)](https://threejs.org/)
 [![VRM](https://img.shields.io/badge/VRM-v3.1.0-orange.svg)](https://vrm.dev/)
 
 一个令人惊艳的纯前端Web应用，用于在浏览器中查看和交互VRM 3D角色模型。采用玻璃拟态设计语言，支持动画、表情、服装切换和音乐同步舞蹈。
 
-![Mate Engine Web界面](https://github.com/user-attachments/assets/f6ee2d84-cf8d-4720-8e66-ceb8e187f9cb)
+**注意：本项目为私有项目，未经授权禁止使用、复制或分发。**
+
+![Mate-Engine-Web3D-Jack界面](https://github.com/user-attachments/assets/f6ee2d84-cf8d-4720-8e66-ceb8e187f9cb)
 
 ---
 
@@ -116,8 +118,8 @@
 
 1. **下载项目**
    ```bash
-   git clone https://github.com/jackdiy/Mate-Engine.git
-   cd Mate-Engine
+   git clone https://github.com/jackdiy/Mate-Engine-Web3D-Jack.git
+   cd Mate-Engine-Web3D-Jack
    ```
 
 2. **打开应用**
@@ -223,13 +225,13 @@ php -S localhost:8000
 ## 📁 项目结构
 
 ```
-Mate-Engine/
+Mate-Engine-Web3D-Jack/
 ├── index.html              # 主页面（玻璃拟态UI设计）
 ├── styles.css              # 样式表（渐变+微动画）
 ├── app.js                  # 核心逻辑（26KB精简代码）
 ├── 使用说明.md              # 详细中文使用指南
 ├── README.md               # 本文档
-├── LICENSE.md              # 许可证
+├── LICENSE.md              # 专有许可证
 └── Assets/                 # 模型资源目录
     └── MATE ENGINE - Avatar/
         ├── DLCs/
@@ -491,34 +493,18 @@ body {
 
 ## 🤝 贡献指南
 
-我们欢迎所有形式的贡献！
+**注意：本项目为私有项目，暂不接受外部贡献。**
 
 ### 报告问题
-1. 前往 [Issues页面](https://github.com/jackdiy/Mate-Engine/issues)
-2. 描述问题（包含截图和错误信息）
-3. 提供浏览器和系统信息
-4. 如可能，提供复现步骤
-
-### 提交改进
-1. Fork本仓库
-2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
-3. 提交更改 (`git commit -m '添加某个惊艳的功能'`)
-4. 推送到分支 (`git push origin feature/amazing-feature`)
-5. 提交Pull Request
-6. 等待审核和反馈
-
-### 代码规范
-- ✅ 使用简体中文注释
-- ✅ 保持代码简洁清晰
-- ✅ 遵循现有代码风格
-- ✅ 添加必要的文档说明
+如有问题，请联系项目维护者。
 
 ---
 
 ## 📄 许可证
 
-### 代码许可
-- **本Web应用：** MIT License - 自由使用、修改和分发
+### 专有许可
+
+- **本项目：** 专有许可证 - 未经授权禁止使用、复制或分发
 - **Three.js：** MIT License
 - **@pixiv/three-vrm：** MIT License
 
@@ -526,7 +512,7 @@ body {
 - **Lazuli（拉祖莉）：** © [Yorshka Shop](https://yorshkasencho.booth.pm/) - 仅供演示，请勿重新分发
 - **其他模型：** 请查看各自的许可证条款
 
-**重要提示：** 使用自定义模型时，请确保遵守原作者的版权和许可证要求！
+**重要提示：** 本项目为私有项目，所有代码和资源未经授权不得使用。使用自定义模型时，请确保遵守原作者的版权和许可证要求！
 
 详细许可证内容请查看 [LICENSE.md](LICENSE.md)
 
@@ -561,9 +547,8 @@ body {
 
 ## 📞 联系方式
 
-- **项目主页：** [https://github.com/jackdiy/Mate-Engine](https://github.com/jackdiy/Mate-Engine)
-- **问题反馈：** [GitHub Issues](https://github.com/jackdiy/Mate-Engine/issues)
-- **讨论区：** [GitHub Discussions](https://github.com/jackdiy/Mate-Engine/discussions)
+- **项目主页：** [https://github.com/jackdiy/Mate-Engine-Web3D-Jack](https://github.com/jackdiy/Mate-Engine-Web3D-Jack)
+- **项目状态：** 私有项目
 
 ---
 
@@ -591,11 +576,9 @@ body {
 
 ---
 
-## ⭐ Star历史
+## ⭐ 项目信息
 
-如果这个项目对你有帮助，请给我们一个Star！⭐
-
-[![Star History Chart](https://api.star-history.com/svg?repos=jackdiy/Mate-Engine&type=Date)](https://star-history.com/#jackdiy/Mate-Engine&Date)
+**Mate-Engine-Web3D-Jack** 是一个私有的3D角色查看器项目。
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * Mate Engine Web - 网页VRM查看器
+ * Mate-Engine-Web3D-Jack - 网页VRM查看器
  * 使用 Three.js + @pixiv/three-vrm
  * 
  * 功能：
@@ -922,7 +922,7 @@ function setupEventListeners() {
 // 应用初始化
 // ========================================
 function init() {
-    console.log('🎭 Mate Engine Web 启动中...');
+    console.log('🎭 Mate-Engine-Web3D-Jack 启动中...');
     
     initScene();
     setupEventListeners();
