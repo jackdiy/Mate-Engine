@@ -1,352 +1,264 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mate Engine - Web VRM Viewer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            overflow: hidden;
-        }
-
-        #canvas-container {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-        }
-
-        #controls {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            max-width: 350px;
-            max-height: 90vh;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #333;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        h2 {
-            font-size: 18px;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            color: #555;
-        }
-
-        .control-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
-            font-size: 14px;
-        }
-
-        input[type="file"] {
-            width: 100%;
-            padding: 8px;
-            border: 2px dashed #667eea;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            background: #f8f9fa;
-        }
-
-        input[type="file"]:hover {
-            background: #e9ecef;
-            border-color: #764ba2;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            margin: 5px 0;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(250, 112, 154, 0.4);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .status {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .status-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            z-index: 2000;
-            display: none;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin: 8px 0;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 8px;
-            cursor: pointer;
-        }
-
-        .checkbox-group label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: normal;
-        }
-
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-            cursor: pointer;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #764ba2;
-        }
-
-        .slider-group {
-            margin: 15px 0;
-        }
-
-        .slider-group input[type="range"] {
-            width: 100%;
-            margin: 10px 0;
-        }
-
-        .slider-value {
-            text-align: right;
-            font-size: 12px;
-            color: #666;
-            font-weight: 600;
-        }
-
-        #info {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #555;
-            max-width: 300px;
-        }
-
-        #info strong {
-            color: #667eea;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 8px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 8px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
-    </style>
+    <title>Mate Engine - 网页VRM查看器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+    <!-- 3D渲染容器 -->
     <div id="canvas-container"></div>
     
-    <div id="loading">
-        <div class="spinner"></div>
-        <p id="loading-text">Loading...</p>
+    <!-- 加载动画 -->
+    <div id="loading" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loader"></div>
+            <p id="loading-text" class="loading-text">加载中...</p>
+            <div class="loading-bar">
+                <div id="loading-progress" class="loading-progress"></div>
+            </div>
+        </div>
     </div>
 
-    <div id="controls">
-        <h1>🎭 Mate Engine Web</h1>
+    <!-- 主控制面板 - 玻璃拟态设计 -->
+    <div id="controls" class="glass-panel">
+        <div class="panel-header">
+            <h1 class="panel-title">
+                <span class="title-icon">🎭</span>
+                <span class="title-text">Mate Engine</span>
+            </h1>
+            <button id="panel-toggle" class="panel-toggle" title="折叠/展开">
+                <span class="toggle-icon">◀</span>
+            </button>
+        </div>
         
-        <div class="control-group">
-            <label for="vrm-file">📁 Load VRM Model</label>
-            <input type="file" id="vrm-file" accept=".vrm">
-            <div id="model-status" class="status status-info" style="display: none;">
-                No model loaded
+        <!-- 角色选择区域 -->
+        <div class="control-section">
+            <h2 class="section-title">
+                <span class="section-icon">👤</span>
+                角色选择
+            </h2>
+            <div class="character-grid">
+                <div class="character-card" data-character="lazuli">
+                    <div class="character-preview">
+                        <div class="preview-placeholder">L</div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">Lazuli</h3>
+                        <p class="character-desc">猫娘角色</p>
+                        <span class="character-size">60MB</span>
+                    </div>
+                </div>
+                <div class="character-card" data-character="aldina">
+                    <div class="character-preview">
+                        <div class="preview-placeholder">A</div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">Aldina</h3>
+                        <p class="character-desc">轻量角色</p>
+                        <span class="character-size">13MB</span>
+                    </div>
+                </div>
+                <div class="character-card" data-character="zome">
+                    <div class="character-preview">
+                        <div class="preview-placeholder">Z</div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">Zome</h3>
+                        <p class="character-desc">默认角色</p>
+                        <span class="character-size">VRM</span>
+                    </div>
+                </div>
+                <div class="character-card" data-character="custom">
+                    <div class="character-preview upload-preview">
+                        <div class="upload-icon">📁</div>
+                        <input type="file" id="vrm-file" accept=".vrm,.me" style="display: none;">
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">自定义</h3>
+                        <p class="character-desc">上传模型</p>
+                        <span class="character-size">VRM/ME</span>
+                    </div>
+                </div>
+            </div>
+            <div id="model-status" class="status-message" style="display: none;"></div>
+        </div>
+
+        <!-- 动画控制 -->
+        <div class="control-section">
+            <h2 class="section-title">
+                <span class="section-icon">💃</span>
+                动画控制
+            </h2>
+            <div class="animation-grid">
+                <button class="animation-button" data-animation="idle">
+                    <span class="anim-icon">🧍</span>
+                    <span class="anim-name">待机</span>
+                </button>
+                <button class="animation-button" data-animation="dance1">
+                    <span class="anim-icon">💫</span>
+                    <span class="anim-name">舞蹈1</span>
+                </button>
+                <button class="animation-button" data-animation="dance2">
+                    <span class="anim-icon">✨</span>
+                    <span class="anim-name">舞蹈2</span>
+                </button>
+                <button class="animation-button" data-animation="wave">
+                    <span class="anim-icon">👋</span>
+                    <span class="anim-name">挥手</span>
+                </button>
+                <button class="animation-button" data-animation="joy">
+                    <span class="anim-icon">😊</span>
+                    <span class="anim-name">欢喜</span>
+                </button>
+                <button class="animation-button" data-animation="jump">
+                    <span class="anim-icon">🦘</span>
+                    <span class="anim-name">跳跃</span>
+                </button>
             </div>
         </div>
 
-        <h2>🎵 Music & Dance</h2>
-        <div class="control-group">
-            <label for="audio-file">🎼 Upload BGM</label>
-            <input type="file" id="audio-file" accept="audio/*">
+        <!-- 音乐与同步 -->
+        <div class="control-section">
+            <h2 class="section-title">
+                <span class="section-icon">🎵</span>
+                音乐同步
+            </h2>
+            <div class="music-controls">
+                <label for="audio-file" class="file-button">
+                    <span class="button-icon">🎼</span>
+                    <span>选择音乐</span>
+                    <input type="file" id="audio-file" accept="audio/*" style="display: none;">
+                </label>
+                <div id="audio-info" class="audio-info" style="display: none;">
+                    <span id="audio-name" class="audio-name"></span>
+                    <button id="remove-audio" class="icon-button">✕</button>
+                </div>
+            </div>
+            <div class="playback-controls">
+                <button id="play-with-music" class="primary-button" disabled>
+                    <span class="button-icon">▶️</span>
+                    <span>播放音乐舞蹈</span>
+                </button>
+                <button id="stop-all" class="secondary-button" disabled>
+                    <span class="button-icon">⏹️</span>
+                    <span>停止</span>
+                </button>
+            </div>
+            <div class="audio-slider">
+                <label class="slider-label">
+                    <span>音量</span>
+                    <span id="volume-value">100%</span>
+                </label>
+                <input type="range" id="volume-slider" min="0" max="100" value="100" class="slider">
+            </div>
         </div>
 
-        <div class="control-group">
-            <label for="animation-select">💃 Select Animation</label>
-            <select id="animation-select">
-                <option value="idle">Idle (Standing)</option>
-                <option value="dance1">Dance 1 (Kawaii Macaron 01)</option>
-                <option value="dance2">Dance 2 (Kawaii Macaron 02)</option>
-                <option value="wave">Wave</option>
-            </select>
+        <!-- 表情控制 -->
+        <div class="control-section">
+            <h2 class="section-title">
+                <span class="section-icon">😊</span>
+                表情控制
+            </h2>
+            <div class="expression-grid">
+                <button class="expression-button" data-expression="neutral">😐 中性</button>
+                <button class="expression-button" data-expression="happy">😊 开心</button>
+                <button class="expression-button" data-expression="sad">😢 伤心</button>
+                <button class="expression-button" data-expression="angry">😠 生气</button>
+                <button class="expression-button" data-expression="surprised">😲 惊讶</button>
+                <button class="expression-button" data-expression="fun">😆 有趣</button>
+            </div>
+            <div class="blend-shapes" id="blend-shapes-container">
+                <p class="hint-text">加载模型后显示混合形状控制</p>
+            </div>
         </div>
 
-        <button id="play-animation" class="btn-primary" disabled>▶️ Play Animation</button>
-        <button id="play-dance-music" class="btn-success" disabled>🎵 Dance with Music</button>
-        <button id="stop-all" class="btn-danger" disabled>⏹️ Stop All</button>
-
-        <h2>👗 Clothing Controls</h2>
-        <div id="clothing-controls">
-            <p style="color: #888; font-size: 12px;">Load a model to see clothing options</p>
+        <!-- 服装控制 -->
+        <div class="control-section">
+            <h2 class="section-title">
+                <span class="section-icon">👗</span>
+                服装控制
+            </h2>
+            <div id="clothing-controls" class="clothing-list">
+                <p class="hint-text">加载模型后显示服装选项</p>
+            </div>
         </div>
 
-        <h2>🎨 Camera & Effects</h2>
-        <div class="slider-group">
-            <label>Camera Distance</label>
-            <input type="range" id="camera-distance" min="0.5" max="3" step="0.1" value="1.5">
-            <div class="slider-value"><span id="distance-value">1.5</span>m</div>
+        <!-- 相机与效果 -->
+        <div class="control-section">
+            <h2 class="section-title">
+                <span class="section-icon">📷</span>
+                相机与效果
+            </h2>
+            <div class="slider-group">
+                <label class="slider-label">
+                    <span>相机距离</span>
+                    <span id="distance-value">1.5m</span>
+                </label>
+                <input type="range" id="camera-distance" min="0.5" max="5" step="0.1" value="1.5" class="slider">
+            </div>
+            <div class="slider-group">
+                <label class="slider-label">
+                    <span>相机高度</span>
+                    <span id="height-value">1.4m</span>
+                </label>
+                <input type="range" id="camera-height" min="0.5" max="2.5" step="0.1" value="1.4" class="slider">
+            </div>
+            <div class="toggle-group">
+                <label class="toggle-label">
+                    <input type="checkbox" id="auto-rotate" checked>
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-text">自动旋转</span>
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" id="follow-mouse" checked>
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-text">鼠标跟踪</span>
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" id="enable-shadows" checked>
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-text">阴影效果</span>
+                </label>
+            </div>
+            <button id="reset-camera" class="secondary-button full-width">
+                <span class="button-icon">🔄</span>
+                <span>重置相机</span>
+            </button>
+            <button id="take-screenshot" class="secondary-button full-width">
+                <span class="button-icon">📸</span>
+                <span>截图</span>
+            </button>
         </div>
-
-        <div class="checkbox-group">
-            <input type="checkbox" id="auto-rotate" checked>
-            <label for="auto-rotate">Auto Rotate Model</label>
-        </div>
-
-        <div class="checkbox-group">
-            <input type="checkbox" id="follow-mouse" checked>
-            <label for="follow-mouse">Head Follows Mouse</label>
-        </div>
-
-        <button id="reset-camera" class="btn-secondary">🔄 Reset Camera</button>
     </div>
 
-    <div id="info">
-        <p><strong>Instructions:</strong></p>
-        <ul style="margin-left: 20px; margin-top: 5px;">
-            <li>Upload a VRM model to begin</li>
-            <li>Choose animations or upload music</li>
-            <li>Click and drag to rotate view</li>
-            <li>Scroll to zoom in/out</li>
-        </ul>
+    <!-- 信息面板 -->
+    <div id="info-panel" class="info-panel glass-panel">
+        <button id="info-toggle" class="info-toggle">
+            <span>ℹ️</span>
+        </button>
+        <div id="info-content" class="info-content">
+            <h3>操作说明</h3>
+            <ul>
+                <li>🖱️ <strong>拖拽</strong>：旋转视角</li>
+                <li>🖱️ <strong>滚轮</strong>：缩放</li>
+                <li>👆 <strong>点击角色</strong>：选择并加载</li>
+                <li>🎵 <strong>上传音乐</strong>：同步舞蹈</li>
+            </ul>
+            <div class="info-stats">
+                <div class="stat-item">
+                    <span class="stat-label">FPS:</span>
+                    <span id="fps-counter" class="stat-value">60</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Three.js and VRM libraries -->
+    <!-- Three.js 和 VRM 库 -->
     <script type="importmap">
     {
         "imports": {
