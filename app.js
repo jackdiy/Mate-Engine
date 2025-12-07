@@ -66,6 +66,13 @@ const CHARACTER_PATHS = {
     zome: 'Assets/MATE ENGINE - Avatar/Zome.vrm'
 };
 
+// 服装检测关键词配置
+const CLOTHING_DETECTION_KEYWORDS = [
+    'cloth', 'dress', 'shirt', 'pants', 'skirt', 
+    'jacket', 'coat', 'top', 'bottom', 
+    '服装', '衣服', '裙子', '裤子'
+];
+
 // ========================================
 // 初始化场景
 // ========================================
@@ -197,9 +204,16 @@ async function loadVRM(file) {
         let url;
         if (typeof file === 'string') {
             // 从文件路径加载（预设角色）
-            const response = await fetch(file);
-            const blob = await response.blob();
-            url = URL.createObjectURL(blob);
+            try {
+                const response = await fetch(file);
+                if (!response.ok) {
+                    throw new Error(`网络请求失败: ${response.status} ${response.statusText}`);
+                }
+                const blob = await response.blob();
+                url = URL.createObjectURL(blob);
+            } catch (fetchError) {
+                throw new Error(`无法加载模型文件: ${fetchError.message}`);
+            }
         } else {
             // 从文件对象加载（用户上传）
             url = URL.createObjectURL(file);
@@ -291,12 +305,10 @@ function detectClothing() {
     
     if (!state.vrm) return;
     
-    const clothingKeywords = ['cloth', 'dress', 'shirt', 'pants', 'skirt', 'jacket', 'coat', 'top', 'bottom', '服装', '衣服', '裙子', '裤子'];
-    
     state.vrm.scene.traverse((obj) => {
         if (obj.isMesh) {
             const name = obj.name.toLowerCase();
-            const isClothing = clothingKeywords.some(keyword => name.includes(keyword));
+            const isClothing = CLOTHING_DETECTION_KEYWORDS.some(keyword => name.includes(keyword));
             
             if (isClothing) {
                 state.clothingMeshes.push({
