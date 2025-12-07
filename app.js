@@ -41,7 +41,7 @@ function initScene() {
     state.renderer = new THREE.WebGLRenderer({ antialias: true });
     state.renderer.setSize(window.innerWidth, window.innerHeight);
     state.renderer.setPixelRatio(window.devicePixelRatio);
-    state.renderer.outputEncoding = THREE.sRGBEncoding;
+    state.renderer.outputColorSpace = THREE.SRGBColorSpace;
     state.renderer.shadowMap.enabled = true;
     state.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(state.renderer.domElement);
