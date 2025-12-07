@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mate Engine - Web VRM Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            max-width: 350px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            background: #f8f9fa;
+        }
+
+        input[type="file"]:hover {
+            background: #e9ecef;
+            border-color: #764ba2;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(250, 112, 154, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        .slider-group {
+            margin: 15px 0;
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .slider-value {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        #info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #555;
+            max-width: 300px;
+        }
+
+        #info strong {
+            color: #667eea;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div id="loading">
+        <div class="spinner"></div>
+        <p id="loading-text">Loading...</p>
+    </div>
+
+    <div id="controls">
+        <h1>🎭 Mate Engine Web</h1>
+        
+        <div class="control-group">
+            <label for="vrm-file">📁 Load VRM Model</label>
+            <input type="file" id="vrm-file" accept=".vrm">
+            <div id="model-status" class="status status-info" style="display: none;">
+                No model loaded
+            </div>
+        </div>
+
+        <h2>🎵 Music & Dance</h2>
+        <div class="control-group">
+            <label for="audio-file">🎼 Upload BGM</label>
+            <input type="file" id="audio-file" accept="audio/*">
+        </div>
+
+        <div class="control-group">
+            <label for="animation-select">💃 Select Animation</label>
+            <select id="animation-select">
+                <option value="idle">Idle (Standing)</option>
+                <option value="dance1">Dance 1 (Kawaii Macaron 01)</option>
+                <option value="dance2">Dance 2 (Kawaii Macaron 02)</option>
+                <option value="wave">Wave</option>
+            </select>
+        </div>
+
+        <button id="play-animation" class="btn-primary" disabled>▶️ Play Animation</button>
+        <button id="play-dance-music" class="btn-success" disabled>🎵 Dance with Music</button>
+        <button id="stop-all" class="btn-danger" disabled>⏹️ Stop All</button>
+
+        <h2>👗 Clothing Controls</h2>
+        <div id="clothing-controls">
+            <p style="color: #888; font-size: 12px;">Load a model to see clothing options</p>
+        </div>
+
+        <h2>🎨 Camera & Effects</h2>
+        <div class="slider-group">
+            <label>Camera Distance</label>
+            <input type="range" id="camera-distance" min="0.5" max="3" step="0.1" value="1.5">
+            <div class="slider-value"><span id="distance-value">1.5</span>m</div>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="auto-rotate" checked>
+            <label for="auto-rotate">Auto Rotate Model</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="follow-mouse" checked>
+            <label for="follow-mouse">Head Follows Mouse</label>
+        </div>
+
+        <button id="reset-camera" class="btn-secondary">🔄 Reset Camera</button>
+    </div>
+
+    <div id="info">
+        <p><strong>Instructions:</strong></p>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            <li>Upload a VRM model to begin</li>
+            <li>Choose animations or upload music</li>
+            <li>Click and drag to rotate view</li>
+            <li>Scroll to zoom in/out</li>
+        </ul>
+    </div>
+
+    <!-- Three.js and VRM libraries -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+            "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3.1.0/lib/three-vrm.module.js"
+        }
+    }
+    </script>
+
+    <script type="module" src="./app.js"></script>
+</body>
+</html>
