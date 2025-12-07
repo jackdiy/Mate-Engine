@@ -2,7 +2,13 @@ NOTICE
 
 This software includes third-party components:
 
-- Qwen 2.5 1.5b LLM (Apache License 2.0)
-  Source: https://huggingface.co/Qwen/Qwen2.5-1.5B
+- Three.js (MIT License)
+  Source: https://threejs.org/
 
-See Third Party Licenses/Qwen 2.5 1.5b/LICENSE.txt for full license text.
+- @pixiv/three-vrm (MIT License)
+  Source: https://github.com/pixiv/three-vrm
+
+- Inter Font (SIL Open Font License)
+  Source: https://fonts.google.com/specimen/Inter
+
+See LICENSE.md for full license information.
